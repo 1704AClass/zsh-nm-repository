@@ -1,12 +1,19 @@
 package com.ningmeng.manage_course.service;
 
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import com.ningmeng.framework.domain.course.CourseBase;
 import com.ningmeng.framework.domain.course.Teachplan;
+import com.ningmeng.framework.domain.course.ext.CourseInfo;
 import com.ningmeng.framework.domain.course.ext.TeachplanNode;
+import com.ningmeng.framework.exception.CustomException;
 import com.ningmeng.framework.exception.ExceptionCast;
 import com.ningmeng.framework.model.response.CommonCode;
+import com.ningmeng.framework.model.response.QueryResponseResult;
+import com.ningmeng.framework.model.response.QueryResult;
 import com.ningmeng.framework.model.response.ResponseResult;
 import com.ningmeng.manage_course.dao.CourseBaseRepository;
+import com.ningmeng.manage_course.dao.CourseMapper;
 import com.ningmeng.manage_course.dao.TeachplanMapper;
 import com.ningmeng.manage_course.dao.TeachplanRepository;
 import org.apache.commons.lang3.StringUtils;
@@ -21,6 +28,8 @@ import java.util.Optional;
 public class CourseService {
     @Autowired
     TeachplanMapper teachplanMapper;
+    @Autowired
+    CourseMapper courseMapper;
     @Autowired
     CourseBaseRepository courseBaseRepository;
     @Autowired
@@ -99,6 +108,29 @@ public class CourseService {
 }
 
 
+/**
+ * 根据公司id  查询课程列表
+ *自动加入spring事务管理
+ *
+ * */
+
+    @Transactional
+    public QueryResponseResult findCoursePage(int page, int pagesize, String companyId) {
+        //异常处理
+        if(companyId==null || !"".equals(companyId)){
+         //通用的异常体系   都是父子集的关系
+          new  ResponseResult(CommonCode.FAIL);
+        }
+        PageHelper.startPage(page,pagesize);
+   Page<CourseInfo> courseListPage = courseMapper.findCourseListPage(companyId);
+        QueryResult queryResult=new QueryResult();
+        queryResult.setList(courseListPage.getResult());
+    queryResult.setTotal(courseListPage.getTotal());
+
+
+
+    return new QueryResponseResult(CommonCode.SUCCESS,queryResult);
+    }
 }
 
 

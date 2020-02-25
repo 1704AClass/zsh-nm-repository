@@ -3,6 +3,7 @@ package com.ningmeng.manage_course.controller;
 import com.ningmeng.api.courseapi.CourseControllerApi;
 import com.ningmeng.framework.domain.course.Teachplan;
 import com.ningmeng.framework.domain.course.ext.TeachplanNode;
+import com.ningmeng.framework.model.response.QueryResponseResult;
 import com.ningmeng.framework.model.response.ResponseResult;
 import com.ningmeng.manage_course.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,14 @@ public ResponseResult addTeachplan(@RequestBody Teachplan teachplan) {
     return courseService.addTeachplan(teachplan);
 }
 
+
+
+//分页查询
+    @Override
+    @GetMapping("/findCourseList/{page}/{pagesize}")
+    public QueryResponseResult findCourseList(@PathVariable("page") int page,@PathVariable("pagesize") int pagesize, String companyId) {
+        return courseService.findCoursePage(page,pagesize,companyId);
+    }
 
 
 }
